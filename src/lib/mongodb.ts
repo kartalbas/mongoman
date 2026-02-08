@@ -168,10 +168,21 @@ export async function dropCollectionIndex(dbName: string, collectionName: string
   await collection.dropIndex(indexName);
 }
 
-export async function getDocuments(dbName: string, collectionName: string, filter?: object) {
+export async function getDocuments(
+  dbName: string,
+  collectionName: string,
+  filter?: object,
+  skip?: number,
+  limit?: number,
+): Promise<{ documents: object[]; totalCount: number }> {
   const client = await clientPromise;
   const collection = client.db(dbName).collection(collectionName);
-  return collection.find(filter || {}).toArray();
+  const query = filter || {};
+  const [documents, totalCount] = await Promise.all([
+    collection.find(query).skip(skip ?? 0).limit(limit ?? 50).toArray(),
+    collection.countDocuments(query),
+  ]);
+  return { documents, totalCount };
 }
 
 export async function createDocument(dbName: string, collectionName: string, document: object) {

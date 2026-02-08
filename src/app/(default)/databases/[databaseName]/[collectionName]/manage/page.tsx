@@ -5,6 +5,7 @@ import { CollectionActions } from './collection-actions';
 import { CollectionStats } from './collection-stats';
 import { IndexManagement } from './index-management';
 import { ImportExport } from '@/components/import-export';
+import { Settings } from 'lucide-react';
 import {
   getCollectionStats,
   getCollectionIndexes,
@@ -24,11 +25,16 @@ export default async function Page({ params }: PageParamsWithCollection) {
 
   return (
     <div className='p-6 space-y-6'>
-      <div className='space-y-0.5'>
-        <h2 className='text-2xl font-bold tracking-tight'>Collection Management</h2>
-        <p className='text-muted-foreground'>
-          Manage {collectionName} collection in {databaseName} database
-        </p>
+      <div className='flex items-center gap-3'>
+        <div className='flex h-10 w-10 items-center justify-center rounded-lg bg-orange-500/10'>
+          <Settings className='h-5 w-5 text-orange-500' />
+        </div>
+        <div>
+          <h1 className='text-2xl font-bold tracking-tight'>{collectionName}</h1>
+          <p className='text-sm text-muted-foreground'>
+            Manage collection in {databaseName}
+          </p>
+        </div>
       </div>
       <Separator />
 
