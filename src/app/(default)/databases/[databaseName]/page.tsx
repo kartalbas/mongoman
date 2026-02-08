@@ -1,7 +1,8 @@
-import { getDatabaseStats, getCollections, createCollection, deleteCollection } from '@/lib/mongodb';
+import { getDatabaseStats, getCollections, createCollection, deleteCollection, restoreDatabase } from '@/lib/mongodb';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatBytes } from '@/lib/utils';
 import { Table } from '@/app/(default)/databases/[databaseName]/table';
+import { BackupRestore } from '@/components/backup-restore';
 import { PageParams } from '@/lib/types';
 import { EJSON } from 'bson';
 
@@ -29,6 +30,8 @@ export default async function Page({ params }: PageParams) {
             />
           </CardContent>
         </Card>
+
+        <BackupRestore databaseName={databaseName} restoreDatabase={restoreDatabase} />
 
         <div className='grid grid-cols-1 md:grid-cols-1 gap-4 w-full'>
           <Card className='w-full'>

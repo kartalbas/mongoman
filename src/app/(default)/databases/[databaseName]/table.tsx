@@ -11,7 +11,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Download, Eye, MoreHorizontal, Settings, Trash, Upload } from 'lucide-react';
+import { Download, Eye, FileSpreadsheet, MoreHorizontal, Settings, Trash, Layers } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -206,13 +206,19 @@ export function Table({ collections, databaseName, createCollection, deleteColle
                   View Data
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => console.log('export', collection.name)}>
-                <Download className='mr-2 h-4 w-4' />
-                Export Data
+              <DropdownMenuItem asChild>
+                <Link href={`${collectionUrl}/aggregate`}>
+                  <Layers className='mr-2 h-4 w-4' />
+                  Aggregation
+                </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => console.log('import', collection.name)}>
-                <Upload className='mr-2 h-4 w-4' />
-                Import Data
+              <DropdownMenuItem onClick={() => window.open(`/api/export/${databaseName}/${collection.name}`, '_blank')}>
+                <Download className='mr-2 h-4 w-4' />
+                Export JSON
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => window.open(`/api/export/${databaseName}/${collection.name}/csv`, '_blank')}>
+                <FileSpreadsheet className='mr-2 h-4 w-4' />
+                Export CSV
               </DropdownMenuItem>
               <AlertDialog>
                 <AlertDialogTrigger asChild>

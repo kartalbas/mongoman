@@ -4,6 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import { CollectionActions } from './collection-actions';
 import { CollectionStats } from './collection-stats';
 import { IndexManagement } from './index-management';
+import { ImportExport } from '@/components/import-export';
 import {
   getCollectionStats,
   getCollectionIndexes,
@@ -13,6 +14,7 @@ import {
   clearCollection,
   createCollectionIndex,
   dropCollectionIndex,
+  importDocuments,
 } from '@/lib/mongodb';
 
 export default async function Page({ params }: PageParamsWithCollection) {
@@ -40,6 +42,12 @@ export default async function Page({ params }: PageParamsWithCollection) {
           reindexCollection={reindexCollection}
           compactCollection={compactCollection}
           clearCollection={clearCollection}
+        />
+
+        <ImportExport
+          databaseName={databaseName}
+          collectionName={collectionName}
+          importDocuments={importDocuments}
         />
       </div>
 

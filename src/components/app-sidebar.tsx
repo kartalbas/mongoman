@@ -2,13 +2,14 @@
 
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { Database, GalleryVerticalEnd, MoreHorizontal, Plus } from 'lucide-react';
+import { Database, GalleryVerticalEnd, LogOut, MoreHorizontal, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupLabel,
   SidebarHeader,
@@ -65,6 +66,8 @@ export interface AppSidebarProps {
   dbHost: string;
   createDatabase: (name: string) => Promise<void>;
   deleteDatabase: (name: string) => Promise<void>;
+  authEnabled?: boolean;
+  username?: string;
 }
 
 export function AppSidebar({
@@ -72,6 +75,8 @@ export function AppSidebar({
   createDatabase,
   deleteDatabase,
   dbHost,
+  authEnabled,
+  username,
   ...props
 }: React.ComponentProps<typeof Sidebar> & AppSidebarProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -250,6 +255,26 @@ export function AppSidebar({
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
+      {authEnabled && (
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton
+                onClick={async () => {
+                  try {
+                    await fetch('/api/auth/logout', { method: 'POST' });
+                  } finally {
+                    window.location.href = '/login';
+                  }
+                }}
+              >
+                <LogOut className='h-4 w-4' />
+                <span>Logout{username ? ` (${username})` : ''}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      )}
       <SidebarRail />
     </Sidebar>
   );

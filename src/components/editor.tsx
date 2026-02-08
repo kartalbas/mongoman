@@ -1,8 +1,11 @@
+'use client';
+
 import React, { useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
 import { json } from '@codemirror/lang-json';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { EJSON } from 'bson';
+import { useTheme } from 'next-themes';
 
 interface Props {
   initialValue: object;
@@ -11,6 +14,7 @@ interface Props {
 
 const DocumentEditor = ({ onChange, initialValue }: Props) => {
   const [error, setError] = useState<string>('');
+  const { resolvedTheme } = useTheme();
 
   const initialValueString = JSON.stringify(initialValue, null, 2);
 
@@ -19,7 +23,7 @@ const DocumentEditor = ({ onChange, initialValue }: Props) => {
       <CodeMirror
         value={initialValueString}
         height='300px'
-        theme='light'
+        theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
         extensions={[json()]}
         onChange={(value) => {
           try {

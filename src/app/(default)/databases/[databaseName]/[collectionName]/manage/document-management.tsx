@@ -28,6 +28,8 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { getUniqueKeys } from '@/lib/utils';
 import Editor from '@/components/editor';
+import { QueryBuilder } from '@/components/query-builder';
+import { useToast } from '@/hooks/use-toast';
 import { Document } from 'mongodb';
 
 // Sub-components
@@ -144,6 +146,7 @@ export function DocumentManagement({
   deleteDocument,
   getDocuments,
 }: DocumentManagementProps) {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -167,7 +170,7 @@ export function DocumentManagement({
   const handleCreateDocument = async () => {
     try {
       if (Object.keys(documentContent).length === 0) {
-        console.error('Document content is empty');
+        toast({ title: 'Error', description: 'Document content is empty', variant: 'destructive' });
         return;
       }
 
@@ -175,8 +178,8 @@ export function DocumentManagement({
       setCreateDialogOpen(false);
       setDocumentContent({});
       getDocuments(databaseName, collectionName).then(setDocuments);
-    } catch (error) {
-      console.error('Failed to create document:', error);
+    } catch {
+      toast({ title: 'Error', description: 'Failed to create document', variant: 'destructive' });
     }
   };
 
@@ -188,8 +191,8 @@ export function DocumentManagement({
       setDocumentContent({});
       setSelectedDocument(null);
       getDocuments(databaseName, collectionName).then(setDocuments);
-    } catch (error) {
-      console.error('Failed to update document:', error);
+    } catch {
+      toast({ title: 'Error', description: 'Failed to update document', variant: 'destructive' });
     }
   };
 
@@ -198,11 +201,11 @@ export function DocumentManagement({
       try {
         await deleteDocument(databaseName, collectionName, id);
         getDocuments(databaseName, collectionName).then(setDocuments);
-      } catch (error) {
-        console.error('Failed to delete document:', error);
+      } catch {
+        toast({ title: 'Error', description: 'Failed to delete document', variant: 'destructive' });
       }
     },
-    [deleteDocument, databaseName, collectionName, getDocuments],
+    [deleteDocument, databaseName, collectionName, getDocuments, toast],
   );
 
   const handleEdit = useCallback((document: Document) => {
@@ -270,15 +273,11 @@ export function DocumentManagement({
         </Dialog>
       </CardHeader>
       <CardContent className='space-y-4'>
-        <div className='flex gap-2'>
-          <Input
-            placeholder="Search documents... (e.g. {'field': 'value'})"
-            className='font-mono'
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <Button variant='secondary'>Search</Button>
-        </div>
+        <QueryBuilder
+          fields={getUniqueKeys(documents)}
+          onQueryChange={(query) => setSearchQuery(query)}
+          initialQuery={searchQuery}
+        />
 
         <DataTable columns={columns} data={documents} defaultSorting={[{ id: '_id', desc: false }]} />
 
